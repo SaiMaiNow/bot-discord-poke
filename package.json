@@ -1,7 +1,7 @@
 {
   "name": "bot-discord-poke",
   "version": "1.0.0",
-  "description": "",
+  "description": "Poke a user in a voice channel",
   "homepage": "https://github.com/SaiMaiNow/bot-discord-poke#readme",
   "bugs": {
     "url": "https://github.com/SaiMaiNow/bot-discord-poke/issues"
@@ -10,8 +10,8 @@
     "type": "git",
     "url": "git+https://github.com/SaiMaiNow/bot-discord-poke.git"
   },
-  "license": "ISC",
-  "author": "",
+  "license": "MIT",
+  "author": "SaiMaiNow",
   "type": "module",
   "main": "index.js",
   "scripts": {
