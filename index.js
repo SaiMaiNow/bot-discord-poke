@@ -1,8 +1,11 @@
 import dotenv from 'dotenv';
 import { REST, Routes, Client, Events, GatewayIntentBits, ChannelType } from 'discord.js';
-
 import fs from 'fs/promises';
 import path from 'path';
+import { fileURLToPath } from 'url';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 dotenv.config();
 
@@ -39,9 +42,12 @@ const rest = new REST({ version: '10' }).setToken(process.env.TOKEN);
 try {
     console.log('Started refreshing application (/) commands.');
 
-    await rest.put(Routes.applicationCommands(process.env.CLIENT_ID), { body: commands });
+    await rest.put(Routes.applicationGuildCommands(process.env.CLIENT_ID, process.env.GUILD_ID), { body: [] });
+    console.log('Successfully deleted all guild commands.');
 
-    console.log('Successfully reloaded application (/) commands.');
+    await rest.put(Routes.applicationGuildCommands(process.env.CLIENT_ID, process.env.GUILD_ID), { body: commands });
+    console.log('Successfully registered guild commands.');
+
 } catch (error) {
     console.error(error);
 }
@@ -88,11 +94,11 @@ client.on(Events.InteractionCreate, async interaction => {
             await interaction.deferReply();
             await interaction.editReply(`${interaction.user.username} Poke ${user.username} 😈`);
 
-            for (let i = 0; i < 5; i++) {
+            for (let i = 0; i < 10; i++) {
                 await member.voice.setChannel(targetChannel);
-                await new Promise(resolve => setTimeout(resolve, 500));
+                await new Promise(resolve => setTimeout(resolve, 100));
                 await member.voice.setChannel(originalChannel);
-                await new Promise(resolve => setTimeout(resolve, 500));
+                await new Promise(resolve => setTimeout(resolve, 100));
             }
 
             await interaction.editReply(`${user.username} มาได้เเล้วมั้งน่อง😑`);
