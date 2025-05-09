@@ -35,6 +35,18 @@ const commands = [
             },
         ],
     },
+    {
+        name: 'poke-msg',
+        description: 'Poke a user with a message',
+        options: [
+            {
+                name: 'user',
+                description: 'The user to poke',
+                type: 6,
+                required: true,
+            }
+        ],
+    }
 ];
 
 const rest = new REST({ version: '10' }).setToken(process.env.TOKEN);
@@ -92,7 +104,7 @@ client.on(Events.InteractionCreate, async interaction => {
 
         try {
             await interaction.deferReply();
-            await interaction.editReply(`${interaction.user.username} Poke ${user.username} 😈`);
+            await interaction.editReply(`<@${interaction.user.id}> Poke <@${user.id}> 😈`);
 
             for (let i = 0; i < 10; i++) {
                 await member.voice.setChannel(targetChannel);
@@ -101,7 +113,7 @@ client.on(Events.InteractionCreate, async interaction => {
                 await new Promise(resolve => setTimeout(resolve, 100));
             }
 
-            await interaction.editReply(`${user.username} มาได้เเล้วมั้งน่อง😑`);
+            await interaction.editReply(`<@${user.id}> มาได้เเล้วมั้งน่อง😑`);
         } catch (error) {
             await interaction.editReply('ไม่สามารถย้ายผู้ใช้ได้ กรุณาตรวจสอบสิทธิ์ของบอท');
         }
@@ -120,6 +132,27 @@ client.on(Events.InteractionCreate, async interaction => {
         fs.writeFile(path.join(__dirname, 'setup.json'), JSON.stringify({ channelId: channel.id }, null, 2));
 
         await interaction.reply(`Setup Bot successfully ${channel.name}! 👍`);
+    } else if (interaction.commandName === 'poke-msg') {
+        const user = interaction.options.getUser('user');
+
+        if (!user) {
+            await interaction.reply('Please provide a valid user to poke.');
+            return;
+        }
+
+        try {
+            await interaction.deferReply();
+            await interaction.editReply(`<@${interaction.user.id}> Poke <@${user.id}> 😈`);
+
+            for (let i = 0; i < 20; i++) {
+                await user.send(`<@${user.id}> มาได้เเล้วมั้งน่อง😑`);
+                await new Promise(resolve => setTimeout(resolve, 500));
+            }
+
+            await interaction.editReply(`Poke <@${user.id}> เรียกคนบิดเรียบร้อยแล้วค่ะ 😊`);
+        } catch (error) {
+            await interaction.editReply('ไม่สามารถส่งข้อความถึงผู้ใช้ได้ อาจเป็นเพราะผู้ใช้ปิดการรับข้อความส่วนตัว');
+        }
     }
 });
 
